@@ -1,0 +1,133 @@
+<!doctype html>
+<html>
+
+	<head>
+		<meta charset="UTF-8">
+		<title></title>
+		<meta name="viewport" content="width=device-width,initial-scale=1,minimum-scale=1,maximum-scale=1,user-scalable=no" />
+		<link href="../css/mui.min.css" rel="stylesheet" />
+		<link rel="stylesheet" href="../css/index.css" type="text/css"/>
+	</head>
+    
+	<body>
+		<!--头部信息-->
+		<header class="mui-bar mui-bar-nav header">
+		    <h1 class="mui-title">源码日报</h1>
+		</header>
+		
+		
+		<!--新闻列表-->
+		<div class="mui-content">
+			<!--banner图-->
+			<div class="mui-slider banner">
+			  <div class="mui-slider-group">
+			    <!--第一个内容区容器-->
+			    <div class="mui-slider-item">
+			      <!-- 具体内容 -->
+			      <img src="../img/1.jpg" />
+			    </div>
+			    <!--第二个内容区-->
+			    <div class="mui-slider-item">
+			      <!-- 具体内容 -->
+			      <img src="../img/2.png" />
+			    </div>
+			    <!--第三个内容区-->
+			    <div class="mui-slider-item">
+			      <!-- 具体内容 -->
+			      <img src="../img/3.jpg" />
+			    </div>
+			  </div>
+			</div>
+		    <!--新闻列表-->
+		    <ul class="mui-table-view" id="news"></ul>
+		    <script type="text/html" id="list">
+		    	{{each stories as list}}
+	    		<li class="mui-table-view-cell mui-media" id="{{list.id}}">
+	            <a href="javascript:;">
+	                <img class="mui-media-object mui-pull-left" src="{{list.images[0]}}">
+	                <div class="mui-media-body">
+	                        {{list.title}}
+	                </div>
+	            </a>
+	            </li>
+	            {{/each}}
+		    </script>
+		</div>
+		<!--底部样式-->
+		<nav class="mui-bar mui-bar-tab">
+		    <a class="mui-tab-item mui-active">
+		        <span class="mui-icon mui-icon-home"></span>
+		        <span class="mui-tab-label">首页</span>
+		    </a>
+		    <a class="mui-tab-item">
+		        <span class="mui-icon mui-icon-phone"></span>
+		        <span class="mui-tab-label">电话</span>
+		    </a>
+		    <a class="mui-tab-item">
+		        <span class="mui-icon mui-icon-email"></span>
+		        <span class="mui-tab-label">邮件</span>
+		    </a>
+		    <a class="mui-tab-item">
+		        <span class="mui-icon mui-icon-gear"></span>
+		        <span class="mui-tab-label">设置</span>
+		    </a>
+		</nav>
+		<script src="../js/mui.min.js"></script>
+		<script type="text/javascript" src="../js/template-web.js" ></script>
+		<script type="text/javascript">
+               //用于加载所有的插件
+			
+            //窗口加载数据
+			mui.plusReady(function(){
+			//新闻列表数据
+				mui.ajax('https://news-at.zhihu.com/api/4/theme/11',{
+					dataType:'json',//服务器返回json格式数据
+					type:'GET',//HTTP请求类型
+					timeout:10000,//超时时间设置为10秒；
+					headers:{'Content-Type':'application/json'},	              
+					success:function(data){
+						//服务器返回响应，根据响应结果，分析是否登录成功；
+//						console.log(data.stories[0].images);
+//                      获取数据
+//                     list为id
+                       var html = template("list",data);
+                       console.log(html);
+                       document.getElementById("news").innerHTML=html;
+					},
+					error:function(xhr,type,errorThrown){
+						//异常处理；
+						console.log(type);
+					}
+				});
+			});
+//			初始化数据，预加载
+			mui.init({
+			  preloadPages:[{
+			    id:'info',
+			    url:'info.html'           
+			  }
+			  ]
+			});
+			
+			var detailPage = null;
+			//添加列表项的点击事件
+			mui('.mui-table-view').on('tap', 'li', function(e) {
+			  var id = this.getAttribute('id');
+//			  alert(id);
+			  //获得详情页面
+			  if(!detailPage){
+			    detailPage = plus.webview.getWebviewById('info');
+			  }
+			  //触发详情页面的newsId事件
+			  mui.fire(detailPage,'id',{
+			    id:id
+			  });
+			//打开详情页面          
+			  mui.openWindow({
+			    id:'info'
+			  });
+			}); 
+		</script>
+	</body>
+
+</html>

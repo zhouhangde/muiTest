@@ -1,0 +1,14 @@
+.header{
+	background: #049cce;
+	/*兼容*/
+	-webkit-box-shadow: none;
+    /*标准写法*/
+	box-shadow: none;
+}
+.header h1{
+	color: white;
+}
+.banner img{
+	width: 400px;
+	height: 183px;
+}
